@@ -31,6 +31,7 @@ class StalberService(service.Service):
 
     def start(self):
         LOG.info('stalberService Starting')
+        self.tg.add_dynamic_timer(self.periodic_tasks, initial_delay=None, periodic_interval_max=30)
 
     def wait(self):
         pass
@@ -41,6 +42,9 @@ class StalberService(service.Service):
     def reset(self):
         logging.setup(cfg.CONF, 'foo')
 
+    def periodic_tasks(self, raise_on_error = False):
+        """Tasks to be run at a periodic interval."""
+        return self.manager.periodic_tasks({'context': 'name'}, raise_on_error=raise_on_error)
 
     @classmethod
     def create(cls, host=None, binary=None, topic=None, manager=None):
@@ -61,7 +65,7 @@ def server(server, workers=None):
     global _launcher
     if _launcher:
         raise RuntimeError(_('serve() can only be called once'))
-    _launcher = service.launch(CONF, server, workers=2,
+    _launcher = service.launch(CONF, server, workers=1,
                                restart_method='reload')
 
 def wait():
