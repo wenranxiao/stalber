@@ -1,7 +1,11 @@
+import sys
+import os
+
 from oslo_config import cfg
 from oslo_log import log as logging
 from oslo_service import service
 from oslo_utils import importutils
+
 
 service_opts = [
     cfg.StrOpt('manager',
@@ -13,9 +17,8 @@ service_opts = [
 
 CONF = cfg.CONF
 CONF.register_opts(service_opts)
-
-
 LOG = logging.getLogger(__name__)
+
 
 class StalberService(service.Service):
 
@@ -31,7 +34,9 @@ class StalberService(service.Service):
 
     def start(self):
         LOG.info('stalberService Starting')
-        self.tg.add_dynamic_timer(self.periodic_tasks, initial_delay=None, periodic_interval_max=30)
+        self.tg.add_dynamic_timer(self.periodic_tasks,
+                                  initial_delay=None,
+                                  periodic_interval_max=30)
 
     def wait(self):
         pass
@@ -42,14 +47,15 @@ class StalberService(service.Service):
     def reset(self):
         logging.setup(cfg.CONF, 'foo')
 
-    def periodic_tasks(self, raise_on_error = False):
+    def periodic_tasks(self, raise_on_error=False):
         """Tasks to be run at a periodic interval."""
-        return self.manager.periodic_tasks({'context': 'name'}, raise_on_error=raise_on_error)
+        return self.manager.periodic_tasks({'context': 'name'},
+                                           raise_on_error=raise_on_error)
 
     @classmethod
     def create(cls, host=None, binary=None, topic=None, manager=None):
         if not host:
-            host=CONF.host
+            host = CONF.host
         if not binary:
             binary = os.path.basename(sys.argv[0])
         if not topic:
@@ -59,7 +65,9 @@ class StalberService(service.Service):
         service_obj = cls(host, binary, topic, manager)
         return service_obj
 
+
 _launcher = None
+
 
 def server(server, workers=None):
     global _launcher
@@ -67,6 +75,7 @@ def server(server, workers=None):
         raise RuntimeError(_('serve() can only be called once'))
     _launcher = service.launch(CONF, server, workers=1,
                                restart_method='reload')
+
 
 def wait():
     _launcher.wait()

@@ -13,7 +13,6 @@ class Manager(periodic_task.PeriodicTasks):
         LOG.info("Manager init")
         super(Manager, self).__init__(CONF)
 
-
     def periodic_tasks(self, context, raise_on_error=False):
         """Tasks to be run at a periodic interval."""
         return self.run_periodic_tasks(context, raise_on_error=raise_on_error)
