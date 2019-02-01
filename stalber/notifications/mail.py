@@ -34,6 +34,7 @@ CONF.register_opts(mail_opts, 'email')
 CONF.register_opts(mail_opts)
 LOG = logging.getLogger(__name__)
 
+
 def send_mail(receivers, subject=None, body=None):
 
     body = 'This stalber test.'
@@ -45,11 +46,12 @@ def send_mail(receivers, subject=None, body=None):
     msg["Subject"] = CONF.email.subject
     receivers = CONF.email.receivers
     server = smtplib.SMTP_SSL(CONF.email.mail_server, CONF.email.mail_port)
-    #server = smtplib.SMTP(CONF.email.mail_server, 25)
+    # server = smtplib.SMTP(CONF.email.mail_server, 25)
     server.set_debuglevel(1)
     server.login(mail_user, mail_pass)
     server.sendmail(mail_user, receivers, msg.as_string())
     server.quit()
+
 
 if __name__ == "__main__":
     result = send_mail(CONF.receivers)
