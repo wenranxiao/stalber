@@ -19,7 +19,3 @@ def main():
     server = service.StalberService.create(binary='stabler', topic='stabler')
     service.server(server)
     service.wait()
-
-
-if __name__ == "__main__":
-    main()
